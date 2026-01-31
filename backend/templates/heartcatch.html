@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Catch the Coopers</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: radial-gradient(circle at center, #3a070e, #120305);
+      overflow: hidden;
+      touch-action: manipulation;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    #game {
+      position: fixed;
+      inset: 0;
+    }
+
+    /* progress bar (time-based) */
+    #progress {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 140px;
+      height: 8px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 999px;
+      overflow: hidden;
+      z-index: 10;
+    }
+
+    #bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #ff2e4c, #ff8fa3);
+      transition: width 0.2s ease;
+    }
+
+    /* score + timer (NOT inside progress) */
+    #scoreboard {
+      position: fixed;
+      top: 36px;
+      left: 16px;
+      font-size: 14px;
+      color: #ffd6dc;
+      opacity: 0.9;
+      z-index: 10;
+    }
+
+    #timer {
+      position: fixed;
+      top: 36px;
+      right: 16px;
+      font-size: 14px;
+      color: #ffd6dc;
+      opacity: 0.9;
+      z-index: 10;
+    }
+
+    #hint {
+      position: fixed;
+      bottom: 18px;
+      width: 100%;
+      text-align: center;
+      color: #ffd6dc;
+      font-size: 14px;
+      opacity: 0.8;
+      z-index: 10;
+    }
+
+    .cooper {
+      position: absolute;
+      user-select: none;
+      pointer-events: auto;
+      will-change: transform;
+    }
+
+    #success {
+      position: fixed;
+      inset: 0;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      text-align: center;
+      z-index: 20;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="game"></div>
+
+  <!-- progress bar -->
+  <div id="progress">
+    <div id="bar"></div>
+  </div>
+
+  <!-- HUD -->
+  <div id="scoreboard">
+    Coopers caught: <span id="score">0</span>
+  </div>
+
+  <div id="timer">
+    Time left: <span id="time">30</span>s
+  </div>
+
+  <div id="hint">Catch the Coopers 🐾</div>
+
+  <div id="success"></div>
+
+  <script src="/static/heartcatch.js"></script>
+</body>
+</html>

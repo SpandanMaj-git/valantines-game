@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>For You ❤️</title>
+
+  <!-- React -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      background: radial-gradient(circle at top, #5a0f1b, #1a0509);
+      font-family: "Inter", sans-serif;
+      overflow: hidden;
+      color: #fff;
+    }
+
+    #playground {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .card {
+      width: min(92vw, 420px);
+      padding: 42px;
+      border-radius: 28px;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+      text-align: center;
+      position: relative;
+    }
+
+    h1 {
+      font-family: "Playfair Display", serif;
+      color: #ffd6dc;
+      margin-bottom: 12px;
+    }
+
+    p {
+      font-size: 18px;
+      color: #f3cbd1;
+      min-height: 72px;
+      line-height: 1.6;
+    }
+
+    button {
+      padding: 14px 28px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    .primary {
+      background: linear-gradient(135deg, #ff2e4c, #b11226);
+      color: #fff;
+      box-shadow: 0 14px 34px rgba(255, 46, 76, 0.5);
+    }
+
+    .secondary {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.4);
+      color: #ffd6dc;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="playground">
+    <div id="root"></div>
+  </div>
+
+  <script type="text/babel" src="/static/app.js"></script>
+</body>
+</html>
