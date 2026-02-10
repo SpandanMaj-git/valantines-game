@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>For You ❤️</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      background: #ffeef2;
+      overflow: hidden;
+      font-family: "Georgia", serif;
+    }
+
+    /* Center everything */
+    .wrapper {
+      position: relative;
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      padding: 12px;
+    }
+
+    /* Frame */
+    .letter-frame {
+      height: 90vh;
+      max-width: 95vw;
+      padding: 10px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 20px 45px rgba(0,0,0,0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .letter-frame img {
+      height: 100%;
+      max-width: 100%;
+      object-fit: contain;
+      border-radius: 12px;
+    }
+
+    /* Hearts */
+    .heart {
+      position: absolute;
+      bottom: -40px;
+      font-size: 20px;
+      opacity: 0.4;
+      animation: floatUp linear infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0); opacity: 0; }
+      15% { opacity: 0.4; }
+      100% { transform: translateY(-120vh); opacity: 0; }
+    }
+
+    /* Game button */
+    #game-btn {
+      position: fixed;
+      bottom: 14px;
+      right: 14px;
+      padding: 10px 14px;
+      font-size: 14px;
+      color: #ffd6dc;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.35);
+      border-radius: 999px;
+      backdrop-filter: blur(6px);
+      cursor: pointer;
+      z-index: 9999;
+
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+    }
+
+    #game-btn.show {
+      animation: fadeSlideIn 0.6s ease forwards;
+      pointer-events: auto;
+    }
+
+    @keyframes fadeSlideIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Background music -->
+  <audio id="bg-music" loop>
+    <source src="{{ url_for('static', filename='assets/song.mp3') }}" type="audio/mpeg">
+  </audio>
+
+  <!-- Letter -->
+  <div class="wrapper">
+    <div class="letter-frame">
+      <img
+        src="{{ url_for('static', filename='assets/letter2.png') }}"
+        alt="My Love Letter"
+      />
+    </div>
+  </div>
+
+  <!-- Hearts -->
+  <div id="hearts"></div>
+
+  <!-- Game button (hidden initially) -->
+  <button id="game-btn">
+    Tap here for a game 🎮
+  </button>
+
+  <script>
+    /* Floating hearts */
+    const heartsContainer = document.getElementById("hearts");
+    for (let i = 0; i < 40; i++) {
+      const heart = document.createElement("span");
+      heart.className = "heart";
+      heart.innerText = "❤️";
+      heart.style.left = Math.random() * 100 + "%";
+      heart.style.animationDuration = (6 + Math.random() * 8) + "s";
+      heart.style.fontSize = (14 + Math.random() * 18) + "px";
+      heartsContainer.appendChild(heart);
+    }
+
+    /* Background music with fade-in */
+    window.addEventListener("load", () => {
+      const music = document.getElementById("bg-music");
+      music.volume = 0;
+
+      let v = 0;
+      const fade = setInterval(() => {
+        if (v >= 0.5) return clearInterval(fade);
+        v += 0.02;
+        music.volume = v;
+      }, 120);
+
+      const p = music.play();
+      if (p !== undefined) {
+        p.catch(() => {
+          document.body.addEventListener("click", () => music.play(), { once: true });
+        });
+      }
+    });
+
+    /* Show game button AFTER 30 seconds */
+    setTimeout(() => {
+      document.getElementById("game-btn").classList.add("show");
+    }, 30000); // 30 seconds
+
+    /* Redirect to game */
+    document.getElementById("game-btn").addEventListener("click", () => {
+      window.location.href = "/game/heartcatch";
+    });
+  </script>
+
+</body>
+</html>
