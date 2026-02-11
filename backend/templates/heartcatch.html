@@ -5,16 +5,35 @@
   <title>Catch the Coopers</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
   <style>
     html, body {
       margin: 0;
       padding: 0;
       height: 100%;
-      background: radial-gradient(circle at center, #3a070e, #120305);
+      background: linear-gradient(135deg, #ff6b9d 0%, #c94b7a 50%, #8b1e3f 100%);
       overflow: hidden;
       touch-action: manipulation;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: "Inter", -apple-system, sans-serif;
+      position: relative;
+    }
+
+    /* Animated background sparkles */
+    body::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: 
+        radial-gradient(circle at 30% 40%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 70% 60%, rgba(255, 182, 193, 0.15) 0%, transparent 50%);
+      animation: sparkleMove 10s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes sparkleMove {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.6; }
     }
 
     #game {
@@ -22,57 +41,97 @@
       inset: 0;
     }
 
-    /* progress bar (time-based) */
-    #progress {
+    /* Progress bar container with enhanced styling */
+    #progress-container {
       position: fixed;
-      top: 16px;
+      top: 20px;
       left: 50%;
       transform: translateX(-50%);
-      width: 140px;
-      height: 8px;
-      background: rgba(255,255,255,0.15);
+      width: 180px;
+      padding: 12px 16px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(255,240,245,0.9));
+      border-radius: 20px;
+      backdrop-filter: blur(12px);
+      box-shadow: 
+        0 4px 20px rgba(255, 107, 157, 0.3),
+        inset 0 1px 0 rgba(255,255,255,0.8);
+      border: 2px solid rgba(255,255,255,0.5);
+      z-index: 10;
+    }
+
+    #progress-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #c91f4d;
+      text-align: center;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    #progress {
+      width: 100%;
+      height: 10px;
+      background: rgba(255, 107, 157, 0.2);
       border-radius: 999px;
       overflow: hidden;
-      z-index: 10;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     #bar {
       height: 100%;
       width: 0%;
-      background: linear-gradient(90deg, #ff2e4c, #ff8fa3);
-      transition: width 0.2s ease;
+      background: linear-gradient(90deg, #ff2e5e, #ff4d7d);
+      transition: width 0.3s ease;
+      box-shadow: 0 0 10px rgba(255, 46, 94, 0.5);
     }
 
-    /* score + timer (NOT inside progress) */
-    #scoreboard {
+    /* HUD styling */
+    #scoreboard, #timer {
       position: fixed;
-      top: 36px;
-      left: 16px;
-      font-size: 14px;
-      color: #ffd6dc;
-      opacity: 0.9;
+      top: 100px;
+      padding: 10px 18px;
+      font-size: 15px;
+      font-weight: 500;
+      color: #fff;
+      background: linear-gradient(145deg, rgba(255,77,125,0.85), rgba(255,46,94,0.85));
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
       z-index: 10;
+      box-shadow: 0 4px 16px rgba(255, 46, 94, 0.3);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+
+    #scoreboard {
+      left: 20px;
     }
 
     #timer {
-      position: fixed;
-      top: 36px;
-      right: 16px;
-      font-size: 14px;
-      color: #ffd6dc;
-      opacity: 0.9;
-      z-index: 10;
+      right: 20px;
+    }
+
+    #score, #time {
+      font-weight: 600;
+      font-size: 18px;
     }
 
     #hint {
       position: fixed;
-      bottom: 18px;
+      bottom: 24px;
       width: 100%;
       text-align: center;
-      color: #ffd6dc;
-      font-size: 14px;
-      opacity: 0.8;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 500;
+      opacity: 0.9;
       z-index: 10;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      animation: hintPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes hintPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
     }
 
     .cooper {
@@ -80,6 +139,13 @@
       user-select: none;
       pointer-events: auto;
       will-change: transform;
+      cursor: pointer;
+      transition: transform 0.1s ease;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+    }
+
+    .cooper:active {
+      transform: scale(0.9);
     }
 
     #success {
@@ -88,10 +154,107 @@
       display: none;
       justify-content: center;
       align-items: center;
-      background: rgba(0,0,0,0.6);
-      color: #fff;
-      text-align: center;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(8px);
       z-index: 20;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    #success > div {
+      padding: 48px 40px;
+      border-radius: 32px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(255,240,245,0.9));
+      box-shadow: 
+        0 20px 60px rgba(255, 107, 157, 0.4),
+        inset 0 1px 0 rgba(255,255,255,0.8);
+      border: 2px solid rgba(255,255,255,0.5);
+      text-align: center;
+      max-width: 90vw;
+      animation: scaleIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes scaleIn {
+      from { 
+        transform: scale(0.8);
+        opacity: 0;
+      }
+      to { 
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    #success .title {
+      font-size: 32px;
+      font-weight: 600;
+      background: linear-gradient(135deg, #ff2e5e, #c91f4d);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 16px;
+    }
+
+    #success .score-text {
+      margin-top: 16px;
+      font-size: 18px;
+      color: #5a2a3a;
+      font-weight: 500;
+    }
+
+    #success .emoji {
+      font-size: 40px;
+      margin: 12px 0;
+      display: inline-block;
+      animation: bounce 0.6s ease infinite alternate;
+    }
+
+    @keyframes bounce {
+      from { transform: translateY(0); }
+      to { transform: translateY(-10px); }
+    }
+
+    /* Mobile optimizations */
+    @media (max-width: 480px) {
+      #progress-container {
+        width: 160px;
+        padding: 10px 14px;
+      }
+
+      #scoreboard, #timer {
+        top: 90px;
+        padding: 8px 14px;
+        font-size: 13px;
+      }
+
+      #scoreboard {
+        left: 14px;
+      }
+
+      #timer {
+        right: 14px;
+      }
+
+      #hint {
+        font-size: 14px;
+        bottom: 20px;
+      }
+
+      #success > div {
+        padding: 40px 32px;
+      }
+
+      #success .title {
+        font-size: 28px;
+      }
+
+      #success .score-text {
+        font-size: 16px;
+      }
     }
   </style>
 </head>
@@ -99,18 +262,21 @@
 <body>
   <div id="game"></div>
 
-  <!-- progress bar -->
-  <div id="progress">
-    <div id="bar"></div>
+  <!-- Enhanced progress bar -->
+  <div id="progress-container">
+    <div id="progress-label">Time Progress</div>
+    <div id="progress">
+      <div id="bar"></div>
+    </div>
   </div>
 
   <!-- HUD -->
   <div id="scoreboard">
-    Coopers caught: <span id="score">0</span>
+    <span style="opacity: 0.8;">Caught:</span> <span id="score">0</span>
   </div>
 
   <div id="timer">
-    Time left: <span id="time">30</span>s
+    <span style="opacity: 0.8;">Time:</span> <span id="time">30</span>s
   </div>
 
   <div id="hint">Catch the Coopers 🐾</div>

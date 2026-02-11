@@ -24,29 +24,44 @@ function App() {
   };
 
   const dodgeNo = () => {
-    const container = containerRef.current;
     const btn = noBtnRef.current;
-    if (!container || !btn) return;
+    if (!btn) return;
 
-    const c = container.getBoundingClientRect();
-    const b = btn.getBoundingClientRect();
-    const SAFE = 16;
+    // Get viewport dimensions
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const btnWidth = btn.offsetWidth;
+    const btnHeight = btn.offsetHeight;
+    
+    const SAFE = 20;
 
-    const maxLeft = c.width - b.width - SAFE;
-    const maxTop = c.height - b.height - SAFE;
+    // Calculate safe boundaries
+    const maxLeft = vw - btnWidth - SAFE;
+    const maxTop = vh - btnHeight - SAFE;
+
+    // Random position within safe boundaries
+    const newLeft = SAFE + Math.random() * (maxLeft - SAFE * 2);
+    const newTop = SAFE + Math.random() * (maxTop - SAFE * 2);
 
     setNoPos({
-      left: Math.random() * maxLeft,
-      top: Math.random() * maxTop,
+      left: newLeft,
+      top: newTop,
     });
 
-    setReactionMessage((prev) =>
-      prev === ""
-        ? "Nice try 😌"
-        : prev === "Nice try 😌"
-        ? "Still trying?"
-        : "Yeah… not happening 😏"
-    );
+    const reactions = [
+      "Nice try 😌",
+      "Still trying? :p",
+      "Where you running to 🙄",
+      "Almost!!",
+      "Nope! 🏃‍♂️",
+      "Keep trying xD",
+      "Not today babygurll"
+    ];
+    
+    setReactionMessage((prev) => {
+      const currentIndex = reactions.indexOf(prev);
+      return reactions[(currentIndex + 1) % reactions.length] || reactions[0];
+    });
   };
 
   const handleYes = () => {
@@ -59,48 +74,97 @@ function App() {
     sound.volume = 0.8;
     sound.play().catch(() => {});
 
+    // Create confetti effect
+    createConfetti();
+
     // show surprise button after short moment
     setTimeout(() => {
       setShowSurprise(true);
-    }, 1200);
+    }, 1500);
+  };
+
+  const createConfetti = () => {
+    const colors = ['#ff0000', '#cc0000', '#990000', '#ff3333', '#ff6666'];
+    const confettiCount = 60;
+
+    for (let i = 0; i < confettiCount; i++) {
+      const confetti = document.createElement('div');
+      confetti.style.position = 'fixed';
+      confetti.style.left = Math.random() * 100 + '%';
+      confetti.style.top = '-10px';
+      confetti.style.width = '12px';
+      confetti.style.height = '12px';
+      confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      confetti.style.opacity = '0.9';
+      confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+      confetti.style.zIndex = '9999';
+      confetti.style.pointerEvents = 'none';
+      confetti.style.boxShadow = '0 0 10px rgba(255, 0, 0, 0.5)';
+      document.body.appendChild(confetti);
+
+      const duration = 2500 + Math.random() * 2000;
+      const startTime = Date.now();
+
+      const animate = () => {
+        const elapsed = Date.now() - startTime;
+        const progress = elapsed / duration;
+
+        if (progress < 1) {
+          const y = progress * window.innerHeight * 1.3;
+          const x = Math.sin(progress * 12) * 120;
+          const rotation = progress * 360 * 4;
+          
+          confetti.style.transform = `translate(${x}px, ${y}px) rotate(${rotation}deg)`;
+          confetti.style.opacity = 0.9 * (1 - progress);
+          
+          requestAnimationFrame(animate);
+        } else {
+          confetti.remove();
+        }
+      };
+
+      animate();
+    }
   };
 
   const text =
     celebrate
-      ? "LET’S GOOOO 💖💖💖"
+      ? "LET'S GOOOO! 💖"
       : reactionMessage ||
         storyMessage ||
-        "I wanted to do something a little special for you.";
+        "I wanted to do something special for you";
 
   return (
     <>
-      {/* MAIN CARD */}
-      <div className="card" ref={containerRef}>
-        <h1>For You ❤️</h1>
+      <div className={`content ${celebrate ? 'celebration-mode' : ''}`} ref={containerRef}>
+        <div className="top-heart">💖</div>
+        
+        <h1>For You</h1>
 
-        <p
-          style={{
-            fontSize: celebrate ? "22px" : "16px",
-            transition: "all 0.3s ease",
-          }}
-        >
-          {text}
-        </p>
+        <div className="message">
+          <div className="message-text">{text}</div>
+        </div>
 
         {celebrate && (
-          <div style={{ fontSize: "28px", marginTop: "12px" }}>
-            💖✨😍💖✨
+          <div className="celebration-emoji-container">
+            <span className="celebration-emoji">💖</span>
+            <span className="celebration-emoji">✨</span>
+            <span className="celebration-emoji">😍</span>
+            <span className="celebration-emoji">💖</span>
+            <span className="celebration-emoji">✨</span>
           </div>
         )}
 
         {step < 6 && (
-          <button className="primary" onClick={next}>
-            Continue
-          </button>
+          <div className="button-container">
+            <button className="primary" onClick={next}>
+              Continue
+            </button>
+          </div>
         )}
 
         {step === 6 && !celebrate && (
-          <div style={{ marginTop: "28px", position: "relative" }}>
+          <div className="button-container">
             <button className="primary" onClick={handleYes}>
               Yes, always ❤️
             </button>
@@ -110,15 +174,12 @@ function App() {
               className="secondary"
               onMouseEnter={dodgeNo}
               onTouchStart={dodgeNo}
-              style={{
-                marginLeft: "12px",
-                ...(noPos && {
-                  position: "absolute",
-                  left: `${noPos.left}px`,
-                  top: `${noPos.top}px`,
-                  transition: "left 0.25s ease, top 0.25s ease",
-                }),
-              }}
+              style={noPos ? {
+                position: 'fixed',
+                left: `${noPos.left}px`,
+                top: `${noPos.top}px`,
+                transition: 'left 0.35s cubic-bezier(0.4, 0, 0.2, 1), top 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
+              } : {}}
             >
               No
             </button>
@@ -126,52 +187,20 @@ function App() {
         )}
       </div>
 
-      {/* SURPRISE BUTTON — SCREEN EDGE */}
+      {/* SURPRISE BUTTON */}
       {showSurprise && (
         <button
+          className="surprise-btn"
           onClick={() => {
-            // Prime audio permission before redirect
-          const primeAudio = new Audio();
-          primeAudio.play().catch(() => {});
-
-          // Set flag
-          sessionStorage.setItem("playMusic", "true");
-
-          window.location.href = "/love-letter";
-
-          }}
-          style={{
-            position: "fixed",
-            bottom: "14px",
-            right: "14px",
-            padding: "10px 14px",
-            fontSize: "14px",
-            color: "#ffd6dc",
-            background: "rgba(255,255,255,0.15)",
-            border: "1px solid rgba(255,255,255,0.35)",
-            borderRadius: "999px",
-            backdropFilter: "blur(6px)",
-            cursor: "pointer",
-            zIndex: 9999,
-
-            opacity: 0,
-            transform: "translateY(12px)",
-            animation: "fadeSlideIn 0.6s ease forwards",
+            const primeAudio = new Audio();
+            primeAudio.play().catch(() => {});
+            sessionStorage.setItem("playMusic", "true");
+            window.location.href = "/love-letter";
           }}
         >
           Tap here for a surprise 💖
         </button>
       )}
-
-      {/* Animation */}
-      <style>{`
-        @keyframes fadeSlideIn {
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
     </>
   );
 }

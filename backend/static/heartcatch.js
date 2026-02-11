@@ -135,15 +135,66 @@ function endGame() {
     celebrateSound.play().catch(() => {});
   }
 
+  // Create confetti effect
+  createConfetti();
+
   success.style.display = "flex";
   success.innerHTML = `
     <div>
-      <div style="font-size:24px;">Nice 😌</div>
-      <div style="margin-top:10px; font-size:16px;">
-        You caught <strong>${score}</strong> Coopers ❤️
+      <div class="title">Amazing! 💖</div>
+      <div class="emoji">🎉</div>
+      <div class="score-text">
+        You caught <strong style="color: #ff2e5e; font-size: 24px;">${score}</strong> Coopers ❤️
+      </div>
+      <div style="margin-top: 24px; font-size: 14px; color: #999;">
+        Great job! 😊
       </div>
     </div>
   `;
+}
+
+// Confetti effect for game end
+function createConfetti() {
+  const colors = ['#ff2e5e', '#ff4d7d', '#ffc0cb', '#ff69b4', '#ff1493'];
+  const confettiCount = 50;
+
+  for (let i = 0; i < confettiCount; i++) {
+    const confetti = document.createElement('div');
+    confetti.style.position = 'fixed';
+    confetti.style.left = Math.random() * 100 + '%';
+    confetti.style.top = '-10px';
+    confetti.style.width = '10px';
+    confetti.style.height = '10px';
+    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+    confetti.style.opacity = '0.8';
+    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+    confetti.style.zIndex = '9999';
+    confetti.style.pointerEvents = 'none';
+    document.body.appendChild(confetti);
+
+    const duration = 2000 + Math.random() * 2000;
+    const startTime = Date.now();
+
+    const animate = () => {
+      const elapsed = Date.now() - startTime;
+      const progress = elapsed / duration;
+
+      if (progress < 1) {
+        const y = progress * window.innerHeight * 1.2;
+        const x = Math.sin(progress * 10) * 100;
+        const rotation = progress * 360 * 3;
+        
+        confetti.style.transform = `translate(${x}px, ${y}px) rotate(${rotation}deg)`;
+        confetti.style.opacity = 0.8 * (1 - progress);
+        
+        requestAnimationFrame(animate);
+      } else {
+        confetti.remove();
+      }
+    };
+
+    animate();
+  }
 }
 
 // ----------------------------

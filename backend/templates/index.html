@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>For You ❤️</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Happy Valentines day my love ❤️</title>
 
   <!-- React -->
   <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
@@ -10,81 +11,388 @@
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
   <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     body {
-      margin: 0;
       height: 100vh;
-      background: radial-gradient(circle at top, #5a0f1b, #1a0509);
-      font-family: "Inter", sans-serif;
+      background: linear-gradient(135deg, #1a0000 0%, #330000 30%, #660000 60%, #990000 100%);
+      font-family: "Poppins", sans-serif;
       overflow: hidden;
       color: #fff;
+      position: relative;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Animated floating hearts background */
+    .hearts-bg {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .heart-float {
+      position: absolute;
+      font-size: 24px;
+      opacity: 0;
+      animation: floatHeart 15s infinite ease-in-out;
+    }
+
+    @keyframes floatHeart {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.4;
+      }
+      90% {
+        opacity: 0.4;
+      }
+      100% {
+        transform: translateY(-100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* Sparkle effect */
+    .sparkles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .sparkle {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      background: #ff0000;
+      border-radius: 50%;
+      animation: twinkle 3s infinite;
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0; transform: scale(0); }
+      50% { opacity: 1; transform: scale(1); }
     }
 
     #playground {
       position: fixed;
       inset: 0;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
+      padding: 40px 24px;
       overflow: hidden;
+      z-index: 2;
     }
 
-    .card {
-      width: min(92vw, 420px);
-      padding: 42px;
-      border-radius: 28px;
-      background: rgba(255,255,255,0.08);
-      backdrop-filter: blur(18px);
-      box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+    .content {
+      width: 100%;
       text-align: center;
-      position: relative;
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Large decorative heart at top */
+    .top-heart {
+      font-size: 80px;
+      margin-bottom: 20px;
+      animation: heartbeat 1.5s ease-in-out infinite;
+      filter: drop-shadow(0 4px 20px rgba(255, 0, 0, 0.5));
+    }
+
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      10%, 30% { transform: scale(1.1); }
+      20%, 40% { transform: scale(1.05); }
     }
 
     h1 {
       font-family: "Playfair Display", serif;
-      color: #ffd6dc;
-      margin-bottom: 12px;
+      font-size: 56px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 30px;
+      letter-spacing: -1px;
+      text-shadow: 
+        0 2px 20px rgba(255, 0, 0, 0.5),
+        0 4px 40px rgba(255, 0, 0, 0.3);
+      line-height: 1.2;
     }
 
-    p {
-      font-size: 18px;
-      color: #f3cbd1;
-      min-height: 72px;
+    .message {
+      font-size: 28px;
+      font-weight: 500;
+      color: #fff;
       line-height: 1.6;
+      min-height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      margin: 40px 0;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+      padding: 0 10px;
+    }
+
+    .message-text {
+      max-width: 100%;
+    }
+
+    .button-container {
+      margin-top: 50px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+      position: relative;
     }
 
     button {
-      padding: 14px 28px;
-      border-radius: 999px;
+      width: 280px;
+      padding: 22px 40px;
+      border-radius: 60px;
       border: none;
       cursor: pointer;
-      font-size: 15px;
+      font-size: 20px;
+      font-weight: 600;
+      font-family: "Poppins", sans-serif;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    button:active {
+      transform: scale(0.95);
     }
 
     .primary {
-      background: linear-gradient(135deg, #ff2e4c, #b11226);
+      background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
       color: #fff;
-      box-shadow: 0 14px 34px rgba(255, 46, 76, 0.5);
+      border: 3px solid rgba(255, 0, 0, 0.5);
+      box-shadow: 
+        0 8px 30px rgba(255, 0, 0, 0.4),
+        0 0 40px rgba(255, 0, 0, 0.2);
+    }
+
+    .primary:active {
+      background: linear-gradient(135deg, #cc0000 0%, #ff0000 100%);
+    }
+
+    .primary::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.3), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .primary:active::before {
+      opacity: 1;
     }
 
     .secondary {
-      background: transparent;
-      border: 1px solid rgba(255,255,255,0.4);
-      color: #ffd6dc;
+      background: rgba(0, 0, 0, 0.4);
+      border: 3px solid rgba(255, 0, 0, 0.4);
+      color: #ff0000;
+      backdrop-filter: blur(10px);
+    }
+
+    .secondary:active {
+      background: rgba(0, 0, 0, 0.6);
+      border-color: rgba(255, 0, 0, 0.6);
+    }
+
+    /* Celebration mode */
+    .celebration-mode .message {
+      font-size: 36px;
+      font-weight: 700;
+    }
+
+    .celebration-emoji-container {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 20px;
+      font-size: 50px;
+    }
+
+    .celebration-emoji {
+      display: inline-block;
+      animation: bounce 0.6s ease infinite alternate;
+    }
+
+    .celebration-emoji:nth-child(2) {
+      animation-delay: 0.1s;
+    }
+
+    .celebration-emoji:nth-child(3) {
+      animation-delay: 0.2s;
+    }
+
+    .celebration-emoji:nth-child(4) {
+      animation-delay: 0.3s;
+    }
+
+    .celebration-emoji:nth-child(5) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes bounce {
+      from { transform: translateY(0); }
+      to { transform: translateY(-15px); }
+    }
+
+    /* Surprise button */
+    .surprise-btn {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 18px 36px;
+      font-size: 18px;
+      font-weight: 600;
+      color: #fff;
+      background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
+      border: 3px solid rgba(255, 0, 0, 0.6);
+      border-radius: 50px;
+      backdrop-filter: blur(10px);
+      cursor: pointer;
+      z-index: 9999;
+      box-shadow: 
+        0 8px 30px rgba(255, 0, 0, 0.4),
+        0 0 40px rgba(255, 0, 0, 0.2);
+      font-family: "Poppins", sans-serif;
+
+      opacity: 0;
+      transform: translateX(-50%) translateY(20px);
+      animation: fadeSlideIn 0.6s ease forwards;
+    }
+
+    @keyframes fadeSlideIn {
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+
+    /* Dodging button animation */
+    .no-button {
+      position: absolute;
+      transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1), 
+                  top 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Mobile optimizations */
+    @media (max-height: 700px) {
+      .top-heart {
+        font-size: 60px;
+        margin-bottom: 15px;
+      }
+
+      h1 {
+        font-size: 48px;
+        margin-bottom: 20px;
+      }
+
+      .message {
+        font-size: 24px;
+        min-height: 150px;
+        margin: 30px 0;
+      }
+
+      .button-container {
+        margin-top: 30px;
+        gap: 16px;
+      }
+
+      button {
+        width: 260px;
+        padding: 18px 36px;
+        font-size: 18px;
+      }
+    }
+
+    @media (max-height: 600px) {
+      .top-heart {
+        font-size: 50px;
+        margin-bottom: 10px;
+      }
+
+      h1 {
+        font-size: 40px;
+        margin-bottom: 15px;
+      }
+
+      .message {
+        font-size: 22px;
+        min-height: 120px;
+        margin: 20px 0;
+      }
     }
   </style>
 </head>
 
 <body>
+  <!-- Animated hearts background -->
+  <div class="hearts-bg" id="hearts-bg"></div>
+  
+  <!-- Sparkles -->
+  <div class="sparkles" id="sparkles"></div>
+
   <div id="playground">
     <div id="root"></div>
   </div>
+
+  <script>
+    // Generate floating hearts
+    const heartsBg = document.getElementById('hearts-bg');
+    for (let i = 0; i < 20; i++) {
+      const heart = document.createElement('div');
+      heart.className = 'heart-float';
+      heart.textContent = ['❤️', '💕', '💖', '💗', '💝'][Math.floor(Math.random() * 5)];
+      heart.style.left = Math.random() * 100 + '%';
+      heart.style.animationDelay = Math.random() * 15 + 's';
+      heart.style.animationDuration = (12 + Math.random() * 6) + 's';
+      heartsBg.appendChild(heart);
+    }
+
+    // Generate sparkles
+    const sparklesContainer = document.getElementById('sparkles');
+    for (let i = 0; i < 40; i++) {
+      const sparkle = document.createElement('div');
+      sparkle.className = 'sparkle';
+      sparkle.style.left = Math.random() * 100 + '%';
+      sparkle.style.top = Math.random() * 100 + '%';
+      sparkle.style.animationDelay = Math.random() * 3 + 's';
+      sparkle.style.animationDuration = (2 + Math.random() * 2) + 's';
+      sparklesContainer.appendChild(sparkle);
+    }
+  </script>
 
   <script type="text/babel" src="/static/app.js"></script>
 </body>
