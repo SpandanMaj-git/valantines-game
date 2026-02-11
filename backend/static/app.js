@@ -130,7 +130,15 @@ function App() {
       {showSurprise && (
         <button
           onClick={() => {
-            window.location.href = "/love-letter";
+            // Prime audio permission before redirect
+          const primeAudio = new Audio();
+          primeAudio.play().catch(() => {});
+
+          // Set flag
+          sessionStorage.setItem("playMusic", "true");
+
+          window.location.href = "/love-letter";
+
           }}
           style={{
             position: "fixed",

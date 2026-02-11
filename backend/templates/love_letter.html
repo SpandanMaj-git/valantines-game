@@ -17,7 +17,6 @@
       font-family: "Georgia", serif;
     }
 
-    /* Center everything */
     .wrapper {
       position: relative;
       height: 100vh;
@@ -29,7 +28,6 @@
       padding: 12px;
     }
 
-    /* Frame */
     .letter-frame {
       height: 90vh;
       max-width: 95vw;
@@ -50,7 +48,6 @@
       border-radius: 12px;
     }
 
-    /* Hearts */
     .heart {
       position: absolute;
       bottom: -40px;
@@ -67,7 +64,6 @@
       100% { transform: translateY(-120vh); opacity: 0; }
     }
 
-    /* Game button */
     #game-btn {
       position: fixed;
       bottom: 14px;
@@ -104,11 +100,10 @@
 <body>
 
   <!-- Background music -->
-  <audio id="bg-music" loop>
+  <audio id="bg-music" loop preload="auto">
     <source src="{{ url_for('static', filename='assets/song.mp3') }}" type="audio/mpeg">
   </audio>
 
-  <!-- Letter -->
   <div class="wrapper">
     <div class="letter-frame">
       <img
@@ -118,10 +113,8 @@
     </div>
   </div>
 
-  <!-- Hearts -->
   <div id="hearts"></div>
 
-  <!-- Game button (hidden initially) -->
   <button id="game-btn">
     Tap here for a game 🎮
   </button>
@@ -139,30 +132,41 @@
       heartsContainer.appendChild(heart);
     }
 
-    /* Background music with fade-in */
+    /* Mobile-safe autoplay logic */
     window.addEventListener("load", () => {
       const music = document.getElementById("bg-music");
       music.volume = 0;
 
-      let v = 0;
-      const fade = setInterval(() => {
-        if (v >= 0.5) return clearInterval(fade);
-        v += 0.02;
-        music.volume = v;
-      }, 120);
+      const startMusic = () => {
+        music.play().then(() => {
+          let v = 0;
+          const fade = setInterval(() => {
+            if (v >= 0.5) {
+              clearInterval(fade);
+              return;
+            }
+            v += 0.02;
+            music.volume = v;
+          }, 120);
+        }).catch(() => {});
+      };
 
-      const p = music.play();
-      if (p !== undefined) {
-        p.catch(() => {
-          document.body.addEventListener("click", () => music.play(), { once: true });
-        });
-      }
+      // Try autoplay
+      music.play().then(() => {
+        music.pause();
+        music.currentTime = 0;
+        startMusic();
+      }).catch(() => {
+        // If blocked (Android Chrome case)
+        document.addEventListener("click", startMusic, { once: true });
+        document.addEventListener("touchstart", startMusic, { once: true });
+      });
     });
 
-    /* Show game button AFTER 30 seconds */
+    /* Show game button after 30 seconds */
     setTimeout(() => {
       document.getElementById("game-btn").classList.add("show");
-    }, 30000); // 30 seconds
+    }, 30000);
 
     /* Redirect to game */
     document.getElementById("game-btn").addEventListener("click", () => {
