@@ -148,10 +148,10 @@ function App() {
         {celebrate && (
           <div className="celebration-emoji-container">
             <span className="celebration-emoji">💖</span>
-            <span className="celebration-emoji">✨</span>
+            <span className="celebration-emoji">🫦</span>
             <span className="celebration-emoji">😍</span>
-            <span className="celebration-emoji">💖</span>
-            <span className="celebration-emoji">✨</span>
+            <span className="celebration-emoji">🍑</span>
+            <span className="celebration-emoji">🍆</span>
           </div>
         )}
 
@@ -192,8 +192,6 @@ function App() {
         <button
           className="surprise-btn"
           onClick={() => {
-            const primeAudio = new Audio();
-            primeAudio.play().catch(() => {});
             sessionStorage.setItem("playMusic", "true");
             window.location.href = "/love-letter";
           }}

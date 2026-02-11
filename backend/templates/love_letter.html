@@ -263,34 +263,24 @@
     /* Mobile-safe autoplay logic */
     window.addEventListener("load", () => {
       const music = document.getElementById("bg-music");
-      music.volume = 0;
-
-      const startMusic = () => {
-        music.play().then(() => {
-          let v = 0;
-          const fade = setInterval(() => {
-            if (v >= 0.5) {
-              clearInterval(fade);
-              return;
-            }
-            v += 0.02;
-            music.volume = v;
-          }, 120);
-        }).catch(() => {});
-      };
-
-      // Try autoplay
-      music.play().then(() => {
-        music.pause();
-        music.currentTime = 0;
-        startMusic();
-      }).catch(() => {
-        // If blocked (Android Chrome case)
+      music.volume = 0.5;
+  
+      const shouldPlay = sessionStorage.getItem("playMusic");
+  
+      if (shouldPlay === "true") {
+        sessionStorage.removeItem("playMusic");
+  
+        const startMusic = () => {
+          music.play().catch(() => {});
+          document.removeEventListener("click", startMusic);
+          document.removeEventListener("touchstart", startMusic);
+        };
+  
+        // Wait for FIRST interaction on this page
         document.addEventListener("click", startMusic, { once: true });
         document.addEventListener("touchstart", startMusic, { once: true });
-      });
+      }
     });
-
     /* Show game button after 30 seconds */
     setTimeout(() => {
       document.getElementById("game-btn").classList.add("show");
